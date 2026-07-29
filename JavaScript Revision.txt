@@ -1,0 +1,101 @@
+JavaScript Revision 
+
+*** var, const, let *** 
+function :- abc(){}
+block :- if, else, switch, while
+
+var  → Function Scope → Accessible throughout the function.
+let  → Block Scope → Accessible only inside {}.
+const → Block Scope → Accessible only inside {}.
+
+var
+✔ Function Scope
+✔ Redeclare
+✔ Reassign
+
+let
+✔ Block Scope
+❌ Redeclare
+✔ Reassign
+
+const
+✔ Block Scope
+❌ Redeclare
+❌ Reassign
+✔ Must initialize while declaring
+
+ 
+Example:-
+function demo() {
+
+    if (true) {
+        var a = 10;
+        let b = 20;
+        const c = 30;
+    }
+
+    console.log(a); // ✅ 10
+    console.log(b); // ❌ ReferenceError
+    console.log(c); // ❌ ReferenceError
+}
+
+demo();
+
+-- variable hoisting can be happened with all var,const and let but var can be access before its initialization but const and let can be temporary dead zone
+
+
+ 
+*** Data Types in JavaScript:- ***
+
+1) Primitive (store single value)
+2) Non Primitive (store collection of value)
+
+
+1) Primitive 
+	-- String
+	-- Number
+	-- Boolean
+	-- Undefined
+	-- Null
+	-- Symbol
+	-- BigInt
+
+2) Non Primitive
+	-- Object
+	-- Array
+	-- Function
+	-- Date
+	-- Map
+	-- Set
+	-- RegExp
+
+
+
+JavaScript Functions:-
+Types of function
+1) Function Declaration 
+-- example 
+greet();
+
+function greet() {
+    console.log("Hello");
+}
+
+greet();
+
+
+
+**** Function ****
+-- Function is a reusable block of code that performs a specific task 
+
+-- Type of Functions
+1) Function Declaration 
+2) Function Expression 
+3) Arrow Function 
+
+
+
+
+
+
+
