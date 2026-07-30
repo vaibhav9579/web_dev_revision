@@ -1,0 +1,462 @@
+React JS Revision
+
+Format for every concept below:
+-- Short Note
+🧠 Mnemonic
+Example
+📌 Real-time Scenario
+
+
+
+*** What is React ***
+-- React is a JavaScript LIBRARY (not framework) for building UI, made of reusable Components
+-- Uses Virtual DOM → updates only the changed part of real DOM instead of re-rendering everything (fast)
+
+🧠 Mnemonic: "React = Reusable + Components + Virtual DOM"
+
+Example:-
+function App() {
+    return <h1>Hello React</h1>;
+}
+
+📌 Real-time Scenario: Building an e-commerce site where product cards, navbar, footer are all separate reusable components used across many pages.
+
+
+
+*** JSX ***
+-- JSX = JavaScript XML → lets you write HTML-like syntax inside JS
+-- Gets compiled (by Babel) into React.createElement() calls behind the scenes
+-- Must return a SINGLE parent element, use {} to embed JS expressions
+
+🧠 Mnemonic: "JSX = JS + XML in one file"
+
+Example:-
+const name = "Vaibhav";
+const element = <h1>Hello, {name}!</h1>;   // Hello, Vaibhav!
+
+📌 Real-time Scenario: Displaying a user's name/profile info dynamically fetched from an API directly inside the markup.
+
+
+
+*** Functional Components ***
+-- Plain JS functions that return JSX, the modern way to build components (class components are legacy)
+
+🧠 Mnemonic: "Function in → JSX out"
+
+Example:-
+function Greet(props) {
+    return <h2>Welcome, {props.username}</h2>;
+}
+
+export default Greet;
+
+📌 Real-time Scenario: A "Header" component reused on every page of a website (Home, About, Contact) just by importing it.
+
+
+
+*** Props (Properties) ***
+-- Used to pass data from PARENT → CHILD component
+-- Read-only (child cannot modify props directly)
+
+🧠 Mnemonic: "Props = Parent's gift to child (can't be changed by child)"
+
+Example:-
+function Child({ name }) {
+    return <p>Hello, {name}</p>;
+}
+
+function Parent() {
+    return <Child name="Vaibhav" />;
+}
+// Output: Hello, Vaibhav
+
+📌 Real-time Scenario: A reusable "ProductCard" component that receives product title, price, image as props and displays each product differently on a shopping page.
+
+
+
+*** State (useState) ***
+-- State = data that belongs to a component and CAN change over time
+-- Changing state re-renders the component automatically
+-- useState returns [value, setterFunction]
+
+🧠 Mnemonic: "useState = use + State → [value, change-it-function]"
+
+Example:-
+import { useState } from 'react';
+
+function Counter() {
+    const [count, setCount] = useState(0);
+
+    return (
+        <button onClick={() => setCount(count + 1)}>
+            Count: {count}
+        </button>
+    );
+}
+
+📌 Real-time Scenario: A "Add to Cart" counter on a shopping app that increases every time the button is clicked.
+
+
+
+*** useEffect (side effects / lifecycle) ***
+-- Runs code AFTER render, used for API calls, subscriptions, timers, DOM manipulation
+-- Dependency array controls WHEN it runs:
+   []          → runs ONCE (like componentDidMount)
+   [value]     → runs when "value" changes
+   no array    → runs after EVERY render
+-- return a cleanup function → runs before unmount (like componentWillUnmount)
+
+🧠 Mnemonic: "useEffect = Effect AFTER render, [] decides HOW OFTEN"
+
+Example:-
+import { useState, useEffect } from 'react';
+
+function Timer() {
+    const [seconds, setSeconds] = useState(0);
+
+    useEffect(() => {
+        const id = setInterval(() => setSeconds(s => s + 1), 1000);
+        return () => clearInterval(id);   // cleanup
+    }, []);
+
+    return <p>Seconds: {seconds}</p>;
+}
+
+📌 Real-time Scenario: Fetching user data from an API as soon as a Profile page loads (empty dependency array = runs once on mount).
+
+
+
+*** Conditional Rendering ***
+-- Show different UI based on a condition, using ternary (? :), &&, or if/else
+
+🧠 Mnemonic: "Condition decides what's shown"
+
+Example:-
+function Status({ isLoggedIn }) {
+    return (
+        <div>
+            {isLoggedIn ? <p>Welcome back!</p> : <p>Please login</p>}
+        </div>
+    );
+}
+
+📌 Real-time Scenario: Showing a "Login" button vs "Logout + Profile" button in the navbar depending on whether the user is authenticated.
+
+
+
+*** Lists & Keys ***
+-- Use .map() to render a list of elements
+-- "key" prop must be UNIQUE for each item → helps React identify which item changed/added/removed (used in Virtual DOM diffing)
+
+🧠 Mnemonic: "map() to loop, key to track (never use index if list can reorder)"
+
+Example:-
+function ItemList({ items }) {
+    return (
+        <ul>
+            {items.map(item => (
+                <li key={item.id}>{item.name}</li>
+            ))}
+        </ul>
+    );
+}
+
+📌 Real-time Scenario: Rendering a list of notifications/messages where each has a unique ID, so React efficiently updates only the new/changed message.
+
+
+
+*** Event Handling ***
+-- React uses camelCase event names (onClick, onChange) and passes a function reference (not a string like HTML)
+
+🧠 Mnemonic: "onClick={fn} → NOT onclick=\"fn()\""
+
+Example:-
+function Button() {
+    function handleClick() {
+        console.log("Button clicked!");
+    }
+    return <button onClick={handleClick}>Click Me</button>;
+}
+
+📌 Real-time Scenario: Handling a "Submit" button click on a form, or a "Like" button click on a social media post.
+
+
+
+*** Controlled Components (Forms) ***
+-- Input's value is controlled by React state (state = single source of truth)
+-- onChange updates state, value comes FROM state
+
+🧠 Mnemonic: "Controlled = state controls input, input never controls itself"
+
+Example:-
+function NameForm() {
+    const [name, setName] = useState("");
+
+    return (
+        <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+        />
+    );
+}
+
+📌 Real-time Scenario: A search bar that filters a list live as the user types, since every keystroke updates state instantly.
+
+
+
+*** Lifting State Up ***
+-- When two sibling components need to share the same data, move (lift) the state to their common PARENT, then pass it down via props
+
+🧠 Mnemonic: "Siblings can't talk directly → lift state to parent, pass down as props"
+
+Example:-
+function Parent() {
+    const [temp, setTemp] = useState(0);
+    return (
+        <>
+            <Celsius temp={temp} setTemp={setTemp} />
+            <Fahrenheit temp={temp} />
+        </>
+    );
+}
+
+📌 Real-time Scenario: A filter sidebar and a product list are siblings — selected filter value is lifted to their parent page component so both stay in sync.
+
+
+
+*** Context API (useContext) ***
+-- Solves "prop drilling" (passing props through many levels just to reach a deep child)
+-- Provider gives value, useContext reads it directly from ANY depth
+
+🧠 Mnemonic: "Context = shared box, any child can grab it without passing through everyone"
+
+Example:-
+const ThemeContext = React.createContext("light");
+
+function App() {
+    return (
+        <ThemeContext.Provider value="dark">
+            <Toolbar />
+        </ThemeContext.Provider>
+    );
+}
+
+function Toolbar() {
+    const theme = useContext(ThemeContext);
+    return <p>Current theme: {theme}</p>; // Current theme: dark
+}
+
+📌 Real-time Scenario: Storing logged-in user info or dark/light theme setting once at the top and accessing it in any deeply nested component (Navbar, Sidebar, Footer) without prop drilling.
+
+
+
+*** useRef ***
+-- Creates a mutable value that PERSISTS across renders WITHOUT causing a re-render when changed
+-- Commonly used to directly access a DOM element
+
+🧠 Mnemonic: "useRef = Remembers value but doesn't Refresh/re-render the screen"
+
+Example:-
+function TextInput() {
+    const inputRef = useRef(null);
+
+    function focusInput() {
+        inputRef.current.focus();
+    }
+
+    return (
+        <>
+            <input ref={inputRef} />
+            <button onClick={focusInput}>Focus Input</button>
+        </>
+    );
+}
+
+📌 Real-time Scenario: Auto-focusing an input field (like OTP box or search bar) as soon as a modal/popup opens.
+
+
+
+*** useMemo ***
+-- Memoizes (caches) the RESULT of an expensive calculation, recalculates only when dependencies change
+
+🧠 Mnemonic: "useMemo = Memorize the VALUE (skip expensive re-calculation)"
+
+Example:-
+const expensiveResult = useMemo(() => {
+    return list.reduce((sum, n) => sum + n, 0);
+}, [list]);
+
+📌 Real-time Scenario: Filtering/sorting a huge product list (10,000 items) — recalculate only when the actual list or filter changes, not on every unrelated re-render (like typing in an unrelated input box).
+
+
+
+*** useCallback ***
+-- Memoizes a FUNCTION itself (returns same function reference) so it doesn't get recreated on every render
+-- Useful when passing callbacks to child components wrapped in React.memo (prevents unnecessary child re-renders)
+
+🧠 Mnemonic: "useCallback = Memorize the FUNCTION (not the value)"
+
+Example:-
+const handleClick = useCallback(() => {
+    console.log("Clicked", count);
+}, [count]);
+
+📌 Real-time Scenario: Passing a "delete item" function as a prop to hundreds of list item child components — useCallback prevents all of them from re-rendering unnecessarily on every parent render.
+
+
+
+*** Custom Hooks ***
+-- A reusable function starting with "use" that contains its own hooks (useState/useEffect) — lets you extract and reuse component logic
+
+🧠 Mnemonic: "Custom Hook = your OWN reusable useState/useEffect combo, name starts with 'use'"
+
+Example:-
+function useWindowWidth() {
+    const [width, setWidth] = useState(window.innerWidth);
+
+    useEffect(() => {
+        const handleResize = () => setWidth(window.innerWidth);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    return width;
+}
+
+// usage: const width = useWindowWidth();
+
+📌 Real-time Scenario: Reusing the same "fetch data from API" logic (loading, error, data states) across multiple pages/components instead of repeating useEffect code everywhere.
+
+
+
+*** useReducer ***
+-- Alternative to useState for COMPLEX state logic (multiple sub-values or next state depends on previous state)
+-- Works like Redux pattern: (state, action) => newState
+
+🧠 Mnemonic: "useReducer = useState's big sibling, for complex logic → dispatch(action) instead of setState(value)"
+
+Example:-
+function reducer(state, action) {
+    switch (action.type) {
+        case "increment": return { count: state.count + 1 };
+        case "decrement": return { count: state.count - 1 };
+        default: return state;
+    }
+}
+
+function Counter() {
+    const [state, dispatch] = useReducer(reducer, { count: 0 });
+    return (
+        <>
+            <p>{state.count}</p>
+            <button onClick={() => dispatch({ type: "increment" })}>+</button>
+            <button onClick={() => dispatch({ type: "decrement" })}>-</button>
+        </>
+    );
+}
+
+📌 Real-time Scenario: Managing a shopping cart's state (add item, remove item, update quantity, clear cart) where multiple related actions update the same state object.
+
+
+
+*** React Router ***
+-- Enables client-side navigation between "pages" (components) WITHOUT full page reload
+
+🧠 Mnemonic: "Routes map path → component, Link navigates without reload"
+
+Example:-
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+
+function App() {
+    return (
+        <BrowserRouter>
+            <Link to="/about">About</Link>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+            </Routes>
+        </BrowserRouter>
+    );
+}
+
+📌 Real-time Scenario: A portfolio website with Home, About, Projects, Contact pages that switch instantly without the browser doing a full refresh.
+
+
+
+*** React.memo ***
+-- Higher order function that wraps a component and skips re-rendering it if its PROPS haven't changed (like PureComponent for functional components)
+
+🧠 Mnemonic: "memo = 'Memo says: don't bother re-rendering me, nothing changed'"
+
+Example:-
+const ProductCard = React.memo(function ProductCard({ name, price }) {
+    console.log("Rendered:", name);
+    return <p>{name} - ₹{price}</p>;
+});
+
+📌 Real-time Scenario: A list of 500 product cards — when only ONE product's price updates, React.memo prevents the other 499 unrelated cards from re-rendering.
+
+
+
+*** Error Boundaries ***
+-- Special class component that catches JS errors in its child component tree and shows a fallback UI instead of crashing the whole app
+
+🧠 Mnemonic: "Error Boundary = safety net, catches crash → shows fallback instead of blank white screen"
+
+Example:-
+class ErrorBoundary extends React.Component {
+    state = { hasError: false };
+    static getDerivedStateFromError() {
+        return { hasError: true };
+    }
+    render() {
+        if (this.state.hasError) return <h2>Something went wrong.</h2>;
+        return this.props.children;
+    }
+}
+
+// usage: <ErrorBoundary><BuggyComponent /></ErrorBoundary>
+
+📌 Real-time Scenario: Wrapping a third-party widget (like a payment or chat widget) so if it crashes, only that section shows an error message instead of breaking the entire page.
+
+
+
+*** Lazy Loading & Suspense ***
+-- React.lazy() loads a component only WHEN it's needed (code-splitting), reduces initial bundle size
+-- Suspense shows a fallback (like a loader) while the lazy component is loading
+
+🧠 Mnemonic: "lazy = load later, Suspense = show spinner while waiting"
+
+Example:-
+import { lazy, Suspense } from "react";
+
+const Dashboard = lazy(() => import("./Dashboard"));
+
+function App() {
+    return (
+        <Suspense fallback={<p>Loading...</p>}>
+            <Dashboard />
+        </Suspense>
+    );
+}
+
+📌 Real-time Scenario: A large admin dashboard page with heavy charts — only load its code when the user actually navigates to "/dashboard", keeping the initial app load fast.
+
+
+
+*** Fragments (<> </>) ***
+-- Lets you group multiple elements WITHOUT adding an extra wrapper <div> to the DOM
+
+🧠 Mnemonic: "Fragment = invisible wrapper, groups elements without extra HTML tag"
+
+Example:-
+function Table() {
+    return (
+        <>
+            <td>Name</td>
+            <td>Age</td>
+        </>
+    );
+}
+
+📌 Real-time Scenario: Returning multiple <td> cells from a component used inside a <tr> — using a normal <div> here would break the HTML table structure.
