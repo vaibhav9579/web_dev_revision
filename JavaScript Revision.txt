@@ -86,12 +86,350 @@ greet();
 
 
 **** Function ****
--- Function is a reusable block of code that performs a specific task 
+-- Function is a reusable block of code that performs a specific task
 
 -- Type of Functions
-1) Function Declaration 
-2) Function Expression 
-3) Arrow Function 
+1) Function Declaration
+2) Function Expression
+3) Arrow Function
+
+
+1) Function Declaration
+✔ Hoisted (can call before defining)
+function greet() {
+    console.log("Hello");
+}
+
+
+2) Function Expression
+❌ Not hoisted (stored in a variable, TDZ/undefined until this line runs)
+const greet = function () {
+    console.log("Hello");
+};
+greet();
+
+
+3) Arrow Function
+❌ Not hoisted
+✔ Shorter syntax
+❌ Does NOT have its own "this" (takes "this" from surrounding/parent scope)
+❌ Cannot be used as a constructor (no "new")
+❌ No "arguments" object
+
+const greet = () => {
+    console.log("Hello");
+};
+
+const add = (a, b) => a + b;   // implicit return, no {} needed
+
+
+
+*** this keyword ***
+-- "this" refers to the object that is calling the function
+
+normal function → "this" depends on HOW it is called (runtime binding)
+arrow function  → "this" is taken from the parent/lexical scope (fixed at creation)
+
+Example:-
+const obj = {
+    name: "Vaibhav",
+    normalFn: function () {
+        console.log(this.name); // ✅ "Vaibhav" (this = obj)
+    },
+    arrowFn: () => {
+        console.log(this.name); // ❌ undefined (this = outer/global scope, not obj)
+    }
+};
+
+obj.normalFn();
+obj.arrowFn();
+
+
+
+*** Hoisting ***
+-- JS moves declarations to the top of their scope before executing code
+
+var       → hoisted, initialized as undefined
+let/const → hoisted, but in Temporal Dead Zone (TDZ) → ReferenceError if used before declaration
+function declaration → fully hoisted (definition + name), can call before defining
+function expression / arrow function → only the variable is hoisted, not the function body
+
+
+
+*** Closures ***
+-- A closure is a function that remembers the variables of its outer (lexical) scope even after the outer function has finished executing
+
+Example:-
+function outer() {
+    let count = 0;
+    return function inner() {
+        count++;
+        console.log(count);
+    };
+}
+
+const counter = outer();
+counter(); // 1
+counter(); // 2
+counter(); // 3
+
+-- used in: data privacy, counters, memoization, currying, event handlers
+
+
+
+*** Higher Order Function (HOF) ***
+-- A function that takes another function as an argument OR returns a function
+
+Example:-
+function hof(fn) {
+    fn();
+}
+
+hof(() => console.log("called inside HOF"));
+
+-- map, filter, reduce, setTimeout are all built-in HOFs
+
+
+
+*** Array Methods (very important) ***
+
+map()     → returns a NEW array after transforming each element
+filter()  → returns a NEW array with elements that pass a condition
+reduce()  → returns a SINGLE value by accumulating over the array
+forEach() → just loops, returns undefined (no new array)
+find()    → returns the FIRST matching element (not array)
+some()    → returns true if AT LEAST ONE element matches
+every()   → returns true if ALL elements match
+
+const nums = [1, 2, 3, 4, 5];
+
+nums.map(n => n * 2);          // [2, 4, 6, 8, 10]
+nums.filter(n => n % 2 === 0); // [2, 4]
+nums.reduce((acc, n) => acc + n, 0); // 15
+nums.find(n => n > 3);         // 4
+nums.some(n => n > 4);         // true
+nums.every(n => n > 0);        // true
+
+
+
+*** Destructuring ***
+-- extract values from arrays/objects into separate variables
+
+Array Destructuring:-
+const arr = [1, 2, 3];
+const [a, b, c] = arr;
+
+Object Destructuring:-
+const user = { name: "Vaibhav", age: 25 };
+const { name, age } = user;
+const { name: userName } = user; // rename while destructuring
+
+
+
+*** Spread ( ... ) vs Rest ( ... ) ***
+-- same syntax, opposite job depending on where it's used
+
+Spread → expands/unpacks values (used while creating array/object/calling function)
+const arr1 = [1, 2, 3];
+const arr2 = [...arr1, 4, 5]; // [1,2,3,4,5]
+
+const obj1 = { a: 1 };
+const obj2 = { ...obj1, b: 2 }; // {a:1, b:2}
+
+Rest → collects remaining values into one variable (used in function params/destructuring)
+function sum(...nums) {
+    return nums.reduce((a, b) => a + b);
+}
+sum(1, 2, 3, 4); // 10
+
+const [first, ...rest] = [1, 2, 3, 4]; // first=1, rest=[2,3,4]
+
+
+
+*** Template Literals ***
+-- use backticks `` instead of quotes, allows embedded expressions with ${}
+
+const name = "Vaibhav";
+console.log(`Hello, ${name}!`); // Hello, Vaibhav!
+-- also supports multi-line strings directly
+
+
+
+*** == vs === ***
+==  → loose equality  → converts type then compares (type coercion)
+=== → strict equality → compares value AND type, no conversion
+
+"5" == 5   // ✅ true  (type converted)
+"5" === 5  // ❌ false (different type)
+
+
+
+*** Truthy / Falsy values ***
+Falsy values (only these 8):
+false, 0, -0, 0n, "", null, undefined, NaN
+
+Everything else is Truthy (including "0", "false", [], {} as strings/objects)
+
+
+
+*** Optional Chaining (?.) and Nullish Coalescing (??) ***
+
+Optional Chaining ?. → stops and returns undefined if value is null/undefined, instead of throwing error
+const user = {};
+console.log(user?.address?.city); // undefined (no error)
+
+Nullish Coalescing ?? → returns right side ONLY if left side is null or undefined (NOT for other falsy values like 0 or "")
+let a = 0;
+console.log(a ?? 10); // 0   (0 is not null/undefined)
+console.log(a || 10); // 10  (|| treats 0 as falsy too — difference between ?? and ||)
+
+
+
+*** Promises ***
+-- Object representing eventual completion (or failure) of an async operation
+-- 3 states: pending → fulfilled / rejected
+
+const promise = new Promise((resolve, reject) => {
+    let success = true;
+    if (success) resolve("Done");
+    else reject("Failed");
+});
+
+promise
+    .then(result => console.log(result))
+    .catch(error => console.log(error));
+
+
+
+*** Async / Await ***
+-- syntactic sugar over Promises, makes async code look synchronous
+-- async function always returns a Promise
+-- await pauses execution until the Promise resolves (only works inside async function)
+
+async function getData() {
+    try {
+        const result = await promise;
+        console.log(result);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+
+*** Event Loop (Call Stack, Microtask, Macrotask) ***
+Call Stack     → executes synchronous code, one at a time
+Web APIs       → handle async stuff (setTimeout, DOM events, fetch)
+Microtask Queue → Promises (.then, .catch, async/await) → HIGHER priority
+Macrotask Queue → setTimeout, setInterval → LOWER priority
+
+-- Call stack must be EMPTY before event loop picks tasks from queues
+-- ALL microtasks run before the next macrotask
+
+Example:-
+console.log("1");
+setTimeout(() => console.log("2"), 0);
+Promise.resolve().then(() => console.log("3"));
+console.log("4");
+
+// Output: 1, 4, 3, 2
+
+
+
+*** Prototype & Prototypal Inheritance ***
+-- every JS object has an internal link to another object called its prototype
+-- used to share methods/properties without duplicating them in every object
+
+function Person(name) {
+    this.name = name;
+}
+Person.prototype.sayHi = function () {
+    console.log(`Hi, I'm ${this.name}`);
+};
+
+const p1 = new Person("Vaibhav");
+p1.sayHi(); // Hi, I'm Vaibhav (sayHi not on p1 itself, found via prototype chain)
+
+
+
+*** Classes (ES6) ***
+-- syntactic sugar over prototype-based inheritance
+
+class Person {
+    constructor(name) {
+        this.name = name;
+    }
+    sayHi() {
+        console.log(`Hi, I'm ${this.name}`);
+    }
+}
+
+class Student extends Person {
+    constructor(name, course) {
+        super(name);       // calls parent constructor
+        this.course = course;
+    }
+}
+
+const s1 = new Student("Vaibhav", "Web Dev");
+s1.sayHi(); // Hi, I'm Vaibhav (inherited)
+
+
+
+*** IIFE (Immediately Invoked Function Expression) ***
+-- function that runs immediately after it's defined, used to create private scope
+
+(function () {
+    console.log("Runs immediately");
+})();
+
+
+
+*** typeof vs instanceof ***
+typeof     → checks primitive data type → returns string
+instanceof → checks if object is an instance of a class/constructor → returns boolean
+
+typeof "hello"      // "string"
+typeof 123          // "number"
+typeof undefined    // "undefined"
+typeof null         // "object" (known JS bug/quirk)
+
+[] instanceof Array  // true
+
+
+
+*** shallow copy vs deep copy ***
+shallow copy → copies only 1 level deep, nested objects/arrays still shared by reference
+deep copy    → copies all levels, no shared reference at all
+
+const obj1 = { a: 1, nested: { b: 2 } };
+
+const shallow = { ...obj1 };               // shallow copy
+shallow.nested.b = 99;
+console.log(obj1.nested.b);                // 99 (changed! shared reference)
+
+const deep = JSON.parse(JSON.stringify(obj1)); // simple deep copy (doesn't work with functions/dates)
+deep.nested.b = 500;
+console.log(obj1.nested.b);                // still 99 (not affected)
+
+
+
+*** Event Bubbling, Capturing & Delegation ***
+Bubbling  → event triggers on target element first, then moves UP to parent elements (default)
+Capturing → event triggers on parent first, then moves DOWN to target (addEventListener(fn, true))
+Delegation → attach ONE listener to a parent, handle events of children using event.target (better performance, works for dynamically added elements)
+
+document.getElementById("parent").addEventListener("click", function (e) {
+    if (e.target.tagName === "BUTTON") {
+        console.log("Button clicked:", e.target.textContent);
+    }
+});
+
+
+
+*** Debounce vs Throttle ***
+Debounce → runs function only AFTER user stops triggering event for X ms (e.g. search input)
+Throttle → runs function at most ONCE every X ms, no matter how many times event triggers (e.g. scroll, resize)
 
 
 
