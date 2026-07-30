@@ -1,0 +1,314 @@
+Angular Revision
+
+*** What is Angular ***
+-- Angular is a TypeScript-based front-end framework (by Google) for building SPAs (Single Page Applications)
+-- Component based → app is built as a tree of components
+-- Comes with everything built-in → routing, forms, HTTP client, DI (unlike React which needs separate libraries)
+
+
+
+*** Angular CLI (basic commands) ***
+ng new my-app          → creates new Angular project
+ng serve               → runs dev server (default: http://localhost:4200)
+ng generate component  → ng g c my-component   (creates component)
+ng generate service    → ng g s my-service     (creates service)
+ng build               → builds project for production
+
+
+
+*** Component ***
+-- basic building block of Angular UI, made of 3 parts:
+1) .ts   → logic (class)
+2) .html → template (view)
+3) .css  → styles
+
+Example (app.component.ts):-
+import { Component } from '@angular/core';
+
+@Component({
+    selector: 'app-hello',
+    templateUrl: './hello.component.html',
+    styleUrls: ['./hello.component.css']
+})
+export class HelloComponent {
+    name = 'Vaibhav';
+}
+
+Example (hello.component.html):-
+<h1>Hello, {{ name }}!</h1>   <!-- Output: Hello, Vaibhav! -->
+
+-- @Component decorator → tells Angular this class is a Component, and links template + styles + selector
+
+
+
+*** Data Binding (4 types) ***
+
+1) Interpolation  {{ }}        → one-way, component → view (display data)
+<p>{{ name }}</p>
+
+2) Property Binding  [ ]        → one-way, component → view (set element property)
+<img [src]="imageUrl">
+
+3) Event Binding  ( )          → one-way, view → component (listen to events)
+<button (click)="sayHi()">Click</button>
+
+4) Two-Way Binding  [( )]  (banana in a box)  → both directions, needs FormsModule
+<input [(ngModel)]="name">
+<p>{{ name }}</p>   <!-- updates as you type -->
+
+
+
+*** Directives ***
+-- instructions that change behavior/appearance of DOM elements
+
+Types:
+1) Structural Directives → change DOM structure (add/remove elements) → prefixed with *
+2) Attribute Directives  → change appearance/behavior of existing element (no add/remove)
+
+1) Structural Directives:-
+*ngIf     → shows element only if condition is true
+<p *ngIf="isLoggedIn">Welcome back!</p>
+
+*ngFor    → loops over a list
+<li *ngFor="let item of items">{{ item }}</li>
+
+*ngSwitch → like switch-case for template
+<div [ngSwitch]="color">
+    <p *ngSwitchCase="'red'">Red</p>
+    <p *ngSwitchCase="'blue'">Blue</p>
+    <p *ngSwitchDefault>Unknown</p>
+</div>
+
+2) Attribute Directives:-
+ngClass → conditionally add/remove CSS classes
+<div [ngClass]="{ active: isActive, disabled: !isActive }"></div>
+
+ngStyle → conditionally apply inline styles
+<div [ngStyle]="{ color: isError ? 'red' : 'green' }"></div>
+
+
+
+*** @Input() and @Output() (Parent ↔ Child communication) ***
+
+@Input()  → parent passes data DOWN to child
+@Output() → child sends data/events UP to parent (using EventEmitter)
+
+child.component.ts:-
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+
+@Component({ selector: 'app-child', template: `
+    <p>{{ message }}</p>
+    <button (click)="notify()">Notify Parent</button>
+`})
+export class ChildComponent {
+    @Input() message: string = '';
+    @Output() clicked = new EventEmitter<string>();
+
+    notify() {
+        this.clicked.emit('Child says hi!');
+    }
+}
+
+parent.component.html:-
+<app-child [message]="parentMsg" (clicked)="onChildClick($event)"></app-child>
+
+parent.component.ts:-
+onChildClick(data: string) {
+    console.log(data); // "Child says hi!"
+}
+
+
+
+*** Lifecycle Hooks (order they run in) ***
+ngOnChanges()   → runs when an @Input() value changes
+ngOnInit()      → runs ONCE after component is initialized (best place for API calls/setup)
+ngDoCheck()     → runs on every change detection cycle
+ngAfterViewInit() → runs after component's view (and child views) are rendered
+ngOnDestroy()   → runs just before component is destroyed (best place to unsubscribe/cleanup)
+
+export class DemoComponent implements OnInit, OnDestroy {
+    ngOnInit() {
+        console.log('Component initialized');
+    }
+    ngOnDestroy() {
+        console.log('Component destroyed - cleanup here');
+    }
+}
+
+
+
+*** Services & Dependency Injection (DI) ***
+-- Service → a class that holds reusable logic/data (e.g. API calls), shared across components
+-- DI → Angular automatically provides (injects) the service instance instead of you creating it with "new"
+
+data.service.ts:-
+import { Injectable } from '@angular/core';
+
+@Injectable({
+    providedIn: 'root'   // makes it a singleton, available app-wide
+})
+export class DataService {
+    getUsers() {
+        return ['Vaibhav', 'Rahul', 'Aman'];
+    }
+}
+
+component.ts:-
+export class UserComponent {
+    users: string[] = [];
+
+    constructor(private dataService: DataService) {   // ✅ injected automatically
+        this.users = this.dataService.getUsers();
+    }
+}
+
+
+
+*** Pipes ***
+-- used to transform displayed data in the template (with | symbol)
+
+{{ name | uppercase }}          // VAIBHAV
+{{ price | currency:'INR' }}    // ₹500.00
+{{ today | date:'dd/MM/yyyy' }} // 30/07/2026
+{{ longText | slice:0:10 }}     // first 10 characters
+
+-- can also create Custom Pipes using @Pipe decorator
+
+
+
+*** RxJS Observables (basics) ***
+-- Observable → represents a stream of data over time (async), similar idea to Promise but can emit MULTIPLE values
+-- must call .subscribe() to actually get the data (otherwise nothing happens - "lazy")
+
+import { Observable } from 'rxjs';
+
+const obs$ = new Observable(observer => {
+    observer.next('Hello');
+    observer.next('World');
+    observer.complete();
+});
+
+obs$.subscribe(value => console.log(value));
+// Output: Hello
+//         World
+
+-- Promise → resolves ONCE  |  Observable → can emit MANY times, and is cancellable (unsubscribe)
+
+
+
+*** HttpClient (calling APIs) ***
+-- import HttpClientModule in app.module.ts first
+
+data.service.ts:-
+import { HttpClient } from '@angular/common/http';
+
+constructor(private http: HttpClient) {}
+
+getUsers() {
+    return this.http.get('https://api.example.com/users'); // returns an Observable
+}
+
+component.ts:-
+this.dataService.getUsers().subscribe(data => {
+    console.log(data);
+});
+
+
+
+*** Routing ***
+-- lets you navigate between different components/pages without full page reload
+
+app-routing.module.ts:-
+const routes: Routes = [
+    { path: '', component: HomeComponent },
+    { path: 'about', component: AboutComponent },
+    { path: 'user/:id', component: UserComponent }   // route parameter
+];
+
+template:-
+<a routerLink="/about">About</a>
+<router-outlet></router-outlet>   <!-- matched component renders here -->
+
+reading route param in component.ts:-
+constructor(private route: ActivatedRoute) {}
+
+ngOnInit() {
+    const id = this.route.snapshot.paramMap.get('id');
+}
+
+
+
+*** Template-driven vs Reactive Forms ***
+
+Template-driven Forms
+✔ Logic mostly in HTML template (uses ngModel)
+✔ Simpler, good for basic forms
+❌ Harder to unit test
+
+<form #f="ngForm" (ngSubmit)="onSubmit(f.value)">
+    <input name="username" ngModel required>
+    <button type="submit">Submit</button>
+</form>
+
+
+Reactive Forms
+✔ Logic in the component class (more control, scalable)
+✔ Easier to unit test
+✔ Better for complex/dynamic forms
+
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+
+export class SignupComponent {
+    signupForm = new FormGroup({
+        username: new FormControl('', Validators.required),
+        email: new FormControl('', [Validators.required, Validators.email])
+    });
+
+    onSubmit() {
+        console.log(this.signupForm.value);
+    }
+}
+
+<form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+    <input formControlName="username">
+    <input formControlName="email">
+    <button type="submit">Submit</button>
+</form>
+
+
+
+*** Modules (NgModule) ***
+-- a way to organize an Angular app into cohesive blocks of functionality
+-- every app has at least one root module → AppModule
+
+@NgModule({
+    declarations: [AppComponent, HelloComponent],  // components/directives/pipes belonging to this module
+    imports: [BrowserModule, FormsModule],          // other modules this module needs
+    providers: [],                                  // services (usually not needed here if providedIn:'root')
+    bootstrap: [AppComponent]                       // root component to load first
+})
+export class AppModule { }
+
+-- Standalone Components (Angular 14+) → components can skip NgModule entirely using "standalone: true"
+@Component({
+    selector: 'app-hello',
+    standalone: true,
+    imports: [CommonModule],
+    template: `<h1>Hello</h1>`
+})
+export class HelloComponent {}
+
+
+
+*** ViewChild ***
+-- used to get a direct reference to a DOM element or child component from the component class
+
+<input #inputRef>
+
+import { ViewChild, ElementRef } from '@angular/core';
+
+@ViewChild('inputRef') inputRef!: ElementRef;
+
+ngAfterViewInit() {
+    this.inputRef.nativeElement.focus();
+}
