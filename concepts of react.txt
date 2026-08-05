@@ -1,0 +1,1628 @@
+# useState ⭐⭐⭐⭐⭐
+
+## 🧠 Think Like This
+I have changing data.
+Whenever it changes, I want the UI to update.
+
+## ✅ What is it?
+A React Hook that stores changing data inside a component.
+When the state changes, React automatically updates the UI.
+
+## 🤔 Why do we use it?
+- Counter
+- Login Form
+- Shopping Cart
+- Student Count
+- Dark Mode
+
+## 🧠 Memory Trick
+📦 Storage Box
+
+Changing value inside the box
+↓
+React refreshes the screen.
+
+## 💼 Real Project
+School ERP
+
+Student Count
+
+100
+↓
+101
+↓
+Dashboard updates automatically.
+
+## ⚠ Interview Trap
+❌ count++
+
+✅ setCount()
+
+Always use the setter function.
+
+## 💻 Pattern
+
+```jsx
+const [count, setCount] = useState(0);
+```
+
+## 🔄 Angular Brain
+Component Property / Signal
+
+## 🎤 Interview Answer
+useState stores local component data.
+When the state changes, React automatically re-renders the component.
+
+## 📝 Keywords
+State
+Local State
+Re-render
+Setter Function 
+
+
+
+# useEffect ⭐⭐⭐⭐⭐
+
+## 🧠 Think Like This
+
+Imagine you open YouTube.
+
+First,
+
+the page appears.
+
+Then,
+
+videos start loading.
+
+React also works like this.
+
+First it shows the screen.
+
+Then it does extra work.
+
+That extra work is done by **useEffect**.
+
+---
+
+## ✅ What is it?
+
+useEffect is a React Hook that runs **after the screen is displayed**.
+
+It is used to do extra work that should happen after the UI appears.
+
+---
+
+## 🤔 Why do we use it?
+
+Because some work should happen **after** the page loads.
+
+Examples:
+
+- Get data from API
+- Start Timer
+- Save data in Local Storage
+- Listen for Window Resize
+- Connect WebSocket
+
+---
+
+## 🧠 Never Forget This
+
+🧹 House Cleaning
+
+Guests come into the house.
+
+↓
+
+Everyone sits.
+
+↓
+
+Now you clean.
+
+Not before.
+
+React says
+
+Show UI First
+
+↓
+
+Then useEffect
+
+---
+
+## 💼 Real Project
+
+Employee Dashboard
+
+User opens Dashboard.
+
+↓
+
+Dashboard screen appears.
+
+↓
+
+Call API
+
+↓
+
+Get Employee List
+
+↓
+
+Display Employees
+
+Without useEffect,
+
+employees would never load.
+
+---
+
+## ⚠ Interview Trap
+
+❌
+
+```jsx
+useEffect(() => {
+  fetchEmployees();
+});
+```
+
+Problem
+
+Runs every time the component updates.
+
+↓
+
+API gets called again and again.
+
+✅ Correct
+
+```jsx
+useEffect(() => {
+  fetchEmployees();
+}, []);
+```
+
+Runs only once when the page opens.
+
+---
+
+## 💻 Pattern
+
+```jsx
+useEffect(() => {
+  fetchEmployees();
+}, []);
+```
+
+---
+
+## 🔄 Angular Brain
+
+Think of it like **ngOnInit()**.
+
+When the page opens,
+
+Angular runs ngOnInit().
+
+React runs useEffect().
+
+---
+
+## 🎤 Interview Answer
+
+useEffect is used to perform work after the component is displayed, such as calling APIs, starting timers, or saving data.
+
+---
+
+## 📝 Keywords
+
+API
+
+After Page Load
+
+Dependency Array
+
+Side Effect
+
+Cleanup
+
+
+Example:-
+import React, { useEffect, useState } from "react";
+
+function TimerComponent() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    console.log("🎬 useEffect runs — after UI shows");
+
+    // 🧠 Do Extra Work
+    const timer = setInterval(() => {
+      setCount((prev) => prev + 1);
+    }, 1000);
+
+    // 🧹 Cleanup (linked back to useEffect)
+    return () => {
+      console.log("🧹 Cleanup runs — before component unmounts");
+      clearInterval(timer);
+    };
+  }, []); // Runs only once when component loads
+
+  return <h2>Timer: {count}</h2>;
+}
+
+export default TimerComponent;
+
+
+
+
+
+# useContext ⭐⭐⭐⭐☆
+
+## 🤯 Problem
+
+Imagine your app has:
+
+App
+
+↓
+
+Dashboard
+
+↓
+
+Sidebar
+
+↓
+
+Profile
+
+↓
+
+User Name
+
+The logged-in user name is needed in all these components.
+
+Should we pass it from Parent → Child → Grandchild every time?
+
+❌ No.
+
+React says:
+
+Use useContext.
+
+---
+
+## 🧠 Think Like This
+
+Many components need the same data.
+
+Instead of passing it everywhere,
+
+keep it in one place.
+
+Everyone can use it.
+
+---
+
+## ✅ What is it?
+
+useContext is a React Hook used to share the same data between multiple components.
+
+It avoids passing data through every parent component.
+
+---
+
+## 🤔 Why do we use it?
+
+Whenever many components need the same data.
+
+Examples:
+
+- Logged-in User
+- Theme (Dark/Light)
+- Language
+- Company Details
+- Permissions
+
+---
+
+## 🧠 Never Forget This
+
+📢 School Principal Announcement
+
+Principal says:
+
+"Tomorrow is Holiday."
+
+Every class gets the same message.
+
+Teacher doesn't have to go class by class.
+
+React works the same way.
+
+One Context
+
+↓
+
+Everyone gets the same data.
+
+---
+
+## 💼 Real Project
+
+School ERP
+
+Logged-in Teacher
+
+↓
+
+Navbar shows Teacher Name
+
+↓
+
+Sidebar shows Teacher Name
+
+↓
+
+Profile Page shows Teacher Name
+
+Instead of passing teacher data through every component,
+
+store it in Context.
+
+Every component can access it directly.
+
+---
+
+## ⚠️ Interview Trap
+
+❌ Don't use Context for every state.
+
+Context is best for shared data.
+
+If only one component needs the data,
+
+use useState.
+
+---
+
+## 💻 Pattern
+
+```jsx
+const user = useContext(UserContext);
+```
+
+---
+
+## 🔄 Angular Brain
+
+Think of it like a Shared Service with Dependency Injection.
+
+Instead of injecting a service,
+
+React reads the value from Context.
+
+---
+
+## 🎤 Interview Answer
+
+useContext is used to share common data between multiple components without passing props through every level of the component tree.
+
+---
+
+## 📝 Keywords
+
+Context
+
+Shared Data
+
+Provider
+
+Consumer
+
+Prop Drilling
+
+example:-
+// 1️⃣ Create Context
+const UserContext = React.createContext();
+
+// 2️⃣ Provide Context
+function App() {
+  const user = "Vaibhav";
+  return (
+    <UserContext.Provider value={user}>
+      <Dashboard />
+    </UserContext.Provider>
+  );
+}
+
+// 3️⃣ Consume Context
+function Profile() {
+  const user = useContext(UserContext);
+  return <h2>Welcome, {user}!</h2>;
+}
+
+
+# useRef ⭐⭐⭐⭐⭐
+
+## 🤯 Problem
+
+Imagine you have an input box.
+
+When the page opens,
+
+you want the cursor to automatically appear inside the input.
+
+How can React access that HTML input?
+
+Or...
+
+You want to store a value,
+
+but you DON'T want the UI to refresh.
+
+React says:
+
+Use useRef.
+
+---
+
+## 🧠 Think Like This
+
+I want to remember something,
+
+but I DON'T want React to refresh the screen.
+
+---
+
+## ✅ What is it?
+
+useRef is a React Hook that stores a value or gives access to an HTML element.
+
+Changing a ref does NOT re-render the component.
+
+---
+
+## 🤔 Why do we use it?
+
+Whenever you want to:
+
+- Focus an input
+- Access an HTML element
+- Store previous value
+- Store Timer ID
+- Store values without refreshing the UI
+
+---
+
+## 🧠 Never Forget This
+
+📌 Sticky Note
+
+Imagine you stick a note on your monitor.
+
+You change the note.
+
+↓
+
+The monitor doesn't restart.
+
+React works the same way.
+
+Changing a Ref
+
+↓
+
+UI doesn't refresh.
+
+---
+
+## 💼 Real Project
+
+useRef has 2 common uses.
+
+1. Access HTML Elements
+   - Focus Input
+   - Play Video
+   - Scroll to Section
+
+2. Store Values
+   - Timer ID
+   - Previous API Response
+   - Previous Search Value
+
+Rule:
+
+Need UI Update?
+
+→ useState
+
+Need NO UI Update?
+
+→ useRef
+---
+
+## ⚠️ Interview Trap
+
+❌ Don't use useRef for values that should appear on the screen.
+
+Example
+
+Counter
+
+Wrong ❌
+
+```jsx
+ref.current++;
+```
+
+UI won't update.
+
+Use useState instead.
+
+---
+
+## 💻 Pattern
+
+```jsx
+const inputRef = useRef(null);
+
+<input ref={inputRef} />
+
+inputRef.current.focus();
+```
+
+---
+
+## 🔄 Angular Brain
+
+Think of it like @ViewChild.
+
+Both are used to access HTML elements.
+
+Extra Power:
+
+useRef can also store values without causing a re-render.
+
+---
+
+## 🎤 Interview Answer
+
+useRef is used to access DOM elements or store values without causing the component to re-render.
+
+---
+
+## 📝 Keywords
+
+useRef
+
+DOM
+
+Focus
+
+Current
+
+No Re-render
+
+
+example:-
+import React, { useRef, useEffect } from "react";
+
+function Login() {
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    // Focus input when page loads
+    inputRef.current.focus();
+  }, []);
+
+  return <input ref={inputRef} placeholder="Enter username" />;
+}
+
+# useMemo ⭐⭐⭐⭐⭐
+
+## 🤯 Problem
+
+Imagine you have 10,000 products.
+
+User clicks
+
+↓
+
+Sort by Price
+
+React sorts all 10,000 products.
+
+Now the user opens the Profile Menu.
+
+Should React sort all 10,000 products again?
+
+❌ No.
+
+React says:
+
+"I already calculated it."
+
+Use useMemo.
+
+---
+
+## 🧠 Think Like This
+
+I already solved this yesterday.
+
+Why solve it again?
+
+---
+
+## ✅ What is it?
+
+useMemo remembers the result of an expensive calculation.
+
+If the data hasn't changed,
+
+React reuses the old result instead of calculating again.
+
+---
+
+## 🤔 Why do we use it?
+
+To improve performance.
+
+Whenever a calculation takes time.
+
+Examples:
+
+- Sorting Products
+- Filtering Products
+- Searching Large Lists
+- Total Price Calculation
+- Reports & Analytics
+
+---
+
+## 🧠 Never Forget This
+
+🧮 Calculator
+
+5 × 500
+
+=
+
+2500
+
+Press = again.
+
+Calculator doesn't calculate again.
+
+It remembers the answer.
+
+useMemo works exactly like that.
+
+---
+
+## 💼 Real Project
+
+E-commerce Website
+
+10,000 Products
+
+↓
+
+Sort by Price
+
+↓
+
+User opens Sidebar
+
+↓
+
+Products don't change.
+
+React uses the old sorted result.
+
+No need to sort again.
+
+Application becomes faster.
+
+---
+
+## ⚠ Interview Trap
+
+❌ Don't use useMemo for everything.
+
+Wrong Example
+
+```jsx
+const name = useMemo(() => "Vaibhav", []);
+```
+
+No calculation.
+
+No benefit.
+
+Use useMemo only for expensive calculations.
+
+---
+
+## 💻 Pattern
+
+```jsx
+const sortedProducts = useMemo(() => {
+  return products.sort((a, b) => a.price - b.price);
+}, [products]);
+```
+
+---
+
+## 🔄 Angular Brain
+
+Think of it like a Pure Pipe.
+
+If the input doesn't change,
+
+Angular doesn't calculate again.
+
+React does the same using useMemo.
+
+---
+
+## 🎤 Interview Answer
+
+useMemo is used to cache the result of an expensive calculation. If the dependencies don't change, React returns the cached result instead of recalculating it.
+
+---
+
+## 📝 Keywords
+
+Performance
+
+Cache
+
+Remember Result
+
+Expensive Calculation
+
+Dependencies
+
+example:-
+import React, { useMemo } from "react";
+
+function ProductList({ products }) {
+  const sortedProducts = useMemo(() => {
+    console.log("Sorting...");
+    return products.sort((a, b) => a.price - b.price);
+  }, [products]);
+
+  return (
+    <ul>
+      {sortedProducts.map((p) => (
+        <li key={p.id}>{p.name} - ₹{p.price}</li>
+      ))}
+    </ul>
+  );
+}
+
+
+# useCallback ⭐⭐⭐⭐☆
+
+## 🤯 Problem
+
+Imagine a Parent component.
+
+Every time the Parent updates,
+
+it creates a new function.
+
+Even if the function is exactly the same,
+
+React thinks
+
+"It's a new function."
+
+↓
+
+Child Component also re-renders.
+
+↓
+
+Application becomes slower.
+
+React says:
+
+"Don't create the same function again."
+
+Use useCallback.
+
+---
+
+## 🧠 Think Like This
+
+Why write the same phone number every day?
+
+Just save it once.
+
+Reuse it.
+
+---
+
+## ✅ What is it?
+
+useCallback remembers a function.
+
+If nothing has changed,
+
+React reuses the same function instead of creating a new one.
+
+---
+
+## 🤔 Why do we use it?
+
+To improve performance.
+
+Whenever the same function is passed to child components.
+
+Examples:
+
+- Button Click
+- Save Function
+- Delete Function
+- Search Function
+- Event Handlers
+
+---
+
+## 🧠 Never Forget This
+
+📞 Phone Number
+
+Your friend's number is
+
+9876543210
+
+Do you save it every morning?
+
+❌ No.
+
+You save it once.
+
+Reuse it.
+
+React does the same.
+
+Instead of creating the same function again,
+
+it reuses the old one.
+
+---
+
+## 💼 Real Project
+
+Employee Management
+
+Employee List
+
+↓
+
+Each Employee Card has a Delete button.
+
+The Delete function is passed to every Employee Card.
+
+Without useCallback,
+
+every Parent update creates a new Delete function.
+
+↓
+
+All Employee Cards re-render.
+
+With useCallback,
+
+React reuses the same Delete function.
+
+↓
+
+Better performance.
+
+---
+
+## ⚠ Interview Trap
+
+❌ Don't use useCallback for every function.
+
+If performance isn't a problem,
+
+normal functions are perfectly fine.
+
+Use useCallback only when needed.
+
+---
+
+## 💻 Pattern
+
+```jsx
+const handleDelete = useCallback(() => {
+  deleteEmployee(id);
+}, [id]);
+```
+
+---
+
+## 🔄 Angular Brain
+
+Think of it like keeping the same method reference.
+
+Instead of creating a new function every time,
+
+React reuses the same function.
+
+---
+
+## 🎤 Interview Answer
+
+useCallback is used to remember a function. If the dependencies don't change, React reuses the same function instead of creating a new one, helping improve performance.
+
+---
+
+## 📝 Keywords
+
+Function
+
+Performance
+
+Memoized Function
+
+Dependencies
+
+React.memo
+
+example:-
+import React, { useCallback } from "react";
+
+function EmployeeList({ employees, deleteEmployee }) {
+  const handleDelete = useCallback(
+    (id) => {
+      deleteEmployee(id);
+    },
+    [deleteEmployee]
+  );
+
+  return employees.map((emp) => (
+    <EmployeeCard key={emp.id} emp={emp} onDelete={handleDelete} />
+  ));
+}
+
+
+# useReducer ⭐⭐⭐⭐☆
+
+## 🤯 Problem
+
+Imagine you're building a Shopping Cart.
+
+User can:
+
+↓
+
+Add Item
+
+Remove Item
+
+Increase Quantity
+
+Decrease Quantity
+
+Clear Cart
+
+If you use lots of useState(),
+
+your code becomes difficult to manage.
+
+React says:
+
+Use one manager.
+
+That manager is useReducer.
+
+---
+
+## 🧠 Think Like This
+
+Too many state changes?
+
+↓
+
+One Manager should handle everything.
+
+---
+
+## ✅ What is it?
+
+useReducer is a React Hook used to manage complex state.
+
+Instead of updating the state directly,
+
+we send an Action to the Reducer.
+
+The Reducer decides how the state should change.
+
+---
+
+## 🤔 Why do we use it?
+
+Whenever one component has lots of state changes.
+
+Examples:
+
+- Shopping Cart
+- Multi-step Form
+- Employee Management
+- Dashboard Filters
+- Complex Forms
+
+---
+
+## 🧠 Never Forget This
+
+👨‍💼 Office Manager
+
+Employee says
+
+"Add New Employee"
+
+↓
+
+Manager decides
+
+↓
+
+Employee Added
+
+Employee says
+
+"Delete Employee"
+
+↓
+
+Manager decides
+
+↓
+
+Employee Removed
+
+Employees don't change data directly.
+
+The Manager decides.
+
+React works exactly the same.
+
+---
+
+## 💼 Real Project
+
+School ERP
+
+Fee Management
+
+User can
+
+↓
+
+Add Fee
+
+Edit Fee
+
+Delete Fee
+
+Reset Form
+
+Instead of writing many useState(),
+
+all actions go to one Reducer.
+
+The Reducer updates the state.
+
+---
+
+## ⚠ Interview Trap
+
+❌ Don't use useReducer for simple forms.
+
+Example
+
+Login Form
+
+Email
+
+Password
+
+Only 2 fields
+
+↓
+
+useState is enough.
+
+Use useReducer only when the state becomes complex.
+
+---
+
+## 💻 Pattern
+
+```jsx
+const [state, dispatch] = useReducer(reducer, initialState);
+
+dispatch({ type: "ADD_STUDENT" });
+```
+
+---
+
+## 🔄 Angular Brain
+
+Think of it like NgRx Store.
+
+dispatch()
+
+↓
+
+Reducer
+
+↓
+
+New State
+
+Same concept.
+
+---
+
+## 🎤 Interview Answer
+
+useReducer is used to manage complex state. Instead of updating state directly, actions are dispatched to a reducer, which decides how the state should change.
+
+---
+
+## 📝 Keywords
+
+Reducer
+
+Dispatch
+
+Action
+
+Complex State
+
+State Management
+
+example:-
+import React, { useReducer } from "react";
+
+const initialState = [];
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "ADD_ITEM":
+      return [...state, action.item];
+    case "REMOVE_ITEM":
+      return state.filter((i) => i.id !== action.id);
+    case "CLEAR_CART":
+      return [];
+    default:
+      return state;
+  }
+}
+
+function Cart() {
+  const [cart, dispatch] = useReducer(reducer, initialState);
+
+  return (
+    <>
+      <button onClick={() => dispatch({ type: "ADD_ITEM", item: { id: 1, name: "Book" } })}>
+        Add Book
+      </button>
+      <button onClick={() => dispatch({ type: "REMOVE_ITEM", id: 1 })}>
+        Remove Book
+      </button>
+      <button onClick={() => dispatch({ type: "CLEAR_CART" })}>
+        Clear Cart
+      </button>
+      <ul>
+        {cart.map((item) => (
+          <li key={item.id}>{item.name}</li>
+        ))}
+      </ul>
+    </>
+  );
+}
+
+
+
+# useLayoutEffect ⭐⭐⭐☆☆
+
+## 🤯 Problem
+
+Imagine you open a page.
+
+A popup should appear exactly in the center.
+
+But first,
+
+the popup appears in the wrong place.
+
+↓
+
+Then it moves to the center.
+
+The user notices the jump.
+
+❌ Bad User Experience.
+
+React says:
+
+"Measure and fix everything BEFORE showing it to the user."
+
+Use useLayoutEffect.
+
+---
+
+## 🧠 Think Like This
+
+Fix everything first.
+
+Then show the screen.
+
+---
+
+## ✅ What is it?
+
+useLayoutEffect works like useEffect,
+
+but it runs BEFORE the browser shows the screen.
+
+It is mainly used when you need to measure or change the DOM before the user sees it.
+
+---
+
+## 🤔 Why do we use it?
+
+Whenever you need to:
+
+- Measure element size
+- Position a popup
+- Scroll to a specific location
+- Avoid screen flickering
+
+---
+
+## 🧠 Never Forget This
+
+🎨 Painter
+
+Wall has a crack.
+
+❌ Paint first
+
+↓
+
+Repair later
+
+Looks bad.
+
+✅ Repair first
+
+↓
+
+Then paint.
+
+Perfect.
+
+React works the same way.
+
+Fix UI
+
+↓
+
+Show UI
+
+---
+
+## 💼 Real Project
+
+School ERP
+
+Student Details Popup
+
+User clicks "View Student"
+
+↓
+
+Popup should appear exactly in the center.
+
+React first measures the popup.
+
+↓
+
+Positions it correctly.
+
+↓
+
+Then shows it.
+
+User never sees the popup jumping.
+
+---
+
+## ⚠ Interview Trap
+
+❌ Don't use useLayoutEffect for API Calls.
+
+API Calls
+
+↓
+
+useEffect ✅
+
+Measuring UI
+
+↓
+
+useLayoutEffect ✅
+
+---
+
+## 💻 Pattern
+
+```jsx
+useLayoutEffect(() => {
+  inputRef.current.focus();
+}, []);
+```
+
+---
+
+## 🔄 Angular Brain
+
+Think of it like ngAfterViewInit(),
+
+but it runs before the browser paints the updated screen.
+
+---
+
+## 🎤 Interview Answer
+
+useLayoutEffect is used when you need to measure or update the DOM before the browser displays it, preventing flickering or incorrect positioning.
+
+---
+
+## 📝 Keywords
+
+DOM
+
+Before Paint
+
+Measure
+
+Layout
+
+No Flicker
+
+
+example:-
+import React, { useLayoutEffect, useRef } from "react";
+
+function Popup() {
+  const popupRef = useRef(null);
+
+  useLayoutEffect(() => {
+    const popup = popupRef.current;
+    const { width, height } = popup.getBoundingClientRect();
+
+    // Center the popup before paint
+    popup.style.left = `${window.innerWidth / 2 - width / 2}px`;
+    popup.style.top = `${window.innerHeight / 2 - height / 2}px`;
+  }, []);
+
+  return <div ref={popupRef} className="popup">Hello!</div>;
+}
+
+
+# useImperativeHandle ⭐⭐⭐☆☆
+
+## 🤯 Problem
+
+Imagine a Parent component wants to control a Child component.
+
+For example,
+
+Parent wants to:
+
+↓
+
+Focus Input
+
+Open Modal
+
+Play Video
+
+But...
+
+The Parent should NOT access everything inside the Child.
+
+It should only access the functions the Child allows.
+
+React says:
+
+Use useImperativeHandle.
+
+---
+
+## 🧠 Think Like This
+
+A TV has hundreds of internal parts.
+
+But the Remote Control only gives you a few buttons:
+
+▶ Play
+
+⏸ Pause
+
+🔊 Volume
+
+❌ You can't control the TV motherboard.
+
+React works the same way.
+
+The Child decides what the Parent can control.
+
+---
+
+## ✅ What is it?
+
+useImperativeHandle lets a Child component expose only selected functions to its Parent.
+
+The Parent cannot access everything.
+
+Only what the Child shares.
+
+---
+
+## 🤔 Why do we use it?
+
+Whenever the Parent needs to control the Child.
+
+Examples:
+
+- Focus Input
+- Open Modal
+- Close Modal
+- Play Video
+- Reset Form
+
+---
+
+## 🧠 Never Forget This
+
+📺 TV Remote
+
+Remote doesn't control everything.
+
+It only has:
+
+- Power
+- Volume
+- Channel
+
+The Child Component also exposes only the methods it wants.
+
+---
+
+## 💼 Real Project
+
+School ERP
+
+Student Form
+
+Parent clicks
+
+↓
+
+"Reset Form"
+
+Instead of changing every input manually,
+
+the Parent simply calls
+
+↓
+
+resetForm()
+
+The Child handles everything internally.
+
+---
+
+## ⚠ Interview Trap
+
+❌ Don't use useImperativeHandle for normal Parent → Child communication.
+
+For normal data,
+
+use Props.
+
+Use useImperativeHandle only when the Parent needs to call a Child function directly.
+
+---
+
+## 💻 Pattern
+
+```jsx
+useImperativeHandle(ref, () => ({
+  resetForm,
+  focusInput
+}));
+```
+
+---
+
+## 🔄 Angular Brain
+
+Think of it like @ViewChild calling a Child Component's public methods.
+
+Example
+
+child.resetForm()
+
+Only public methods are accessible.
+
+---
+
+## 🎤 Interview Answer
+
+useImperativeHandle allows a Child component to expose only selected methods to its Parent through a ref.
+
+---
+
+## 📝 Keywords
+
+Ref
+
+Parent
+
+Child
+
+Expose Methods
+
+forwardRef
+
+example:-
+
+import React, { useImperativeHandle, useRef, forwardRef } from "react";
+
+const StudentForm = forwardRef((props, ref) => {
+  const inputRef = useRef();
+
+  const resetForm = () => {
+    inputRef.current.value = "";
+  };
+
+  useImperativeHandle(ref, () => ({
+    resetForm,
+    focusInput: () => inputRef.current.focus()
+  }));
+
+  return <input ref={inputRef} placeholder="Enter Student Name" />;
+});
+
+function App() {
+  const formRef = useRef();
+
+  return (
+    <>
+      <StudentForm ref={formRef} />
+      <button onClick={() => formRef.current.resetForm()}>Reset Form</button>
+      <button onClick={() => formRef.current.focusInput()}>Focus Input</button>
+    </>
+  );
+}
