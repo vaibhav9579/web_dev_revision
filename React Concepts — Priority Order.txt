@@ -1,0 +1,57 @@
+React Concepts — Priority Order
+
+Since you already know Angular/full-stack development, don't learn all 43 concepts equally.
+
+Use this order:
+
+Level-1
+1. Components
+2. JSX
+3. Props
+4. State
+5. Events
+6. Conditional Rendering
+7. Lists + Keys
+8. Forms
+9. useState
+10. useEffect
+11. API calls
+12. React Router
+
+
+Level-2
+1. Components
+2. JSX
+3. Props
+4. State
+5. Events
+6. Conditional Rendering
+7. Lists + Keys
+8. Forms
+9. useState
+10. useEffect
+11. API calls
+12. React Router
+
+Level-3
+24. Redux Toolkit
+25. TanStack Query
+26. Advanced Forms
+27. Code Splitting
+28. Lazy Loading
+29. Suspense
+30. Performance Optimization
+31. Testing
+32. Accessibility
+
+Level-4
+24. Redux Toolkit
+25. TanStack Query
+26. Advanced Forms
+27. Code Splitting
+28. Lazy Loading
+29. Suspense
+30. Performance Optimization
+31. Testing
+32. Accessibility
+
